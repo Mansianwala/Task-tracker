@@ -8,6 +8,9 @@ const Dashboard = () => {
   const [tasks, setTasks] = useState([]);
   const [currentFilter, setCurrentFilter] = useState('all');
   const [editTask, setEditTask] = useState(null);
+  const [editTitle, setEditTitle] = useState('');
+  const [editDescription, setEditDescription] = useState('');
+  const [editDueDate, setEditDueDate] = useState('');
   const [search, setSearch] = useState('');
   const [darkMode, setDarkMode] = useState(() => {
     return localStorage.getItem('darkMode') === 'true';
@@ -58,6 +61,29 @@ const Dashboard = () => {
   };
 
   const username = localStorage.getItem('username');
+  const startEditTask = (task) => {
+    setEditTask(task);
+    setEditTitle(task.title);
+    setEditDescription(task.description || '');
+    setEditDueDate(task.dueDate || '');
+  };
+
+  const handleEditSave = () => {
+    if (!editTitle.trim()) return;
+    const updatedTask = {
+      ...editTask,
+      title: editTitle.trim(),
+      description: editDescription.trim(),
+      dueDate: editDueDate || null,
+    };
+    setTasks(tasks.map(t => t.id === updatedTask.id ? updatedTask : t));
+    setEditTask(null);
+  };
+
+  const handleEditCancel = () => {
+    setEditTask(null);
+  };
+
   return (
     <div>
       <button
@@ -68,6 +94,36 @@ const Dashboard = () => {
       </button>
       <h2>Dashboard</h2>
       <p>Welcome, {username}!</p>
+      {editTask && (
+        <div className="modal" style={{position:'fixed',top:0,left:0,right:0,bottom:0,background:'rgba(0,0,0,0.3)',display:'flex',alignItems:'center',justifyContent:'center',zIndex:1000}}>
+          <div style={{background:'#fff',padding:24,borderRadius:10,minWidth:320}}>
+            <h3>Edit Task</h3>
+            <input
+              type="text"
+              value={editTitle}
+              onChange={e => setEditTitle(e.target.value)}
+              required
+              style={{width:'100%',marginBottom:8}}
+            />
+            <textarea
+              value={editDescription}
+              onChange={e => setEditDescription(e.target.value)}
+              placeholder="Description (optional)"
+              style={{width:'100%',marginBottom:8}}
+            />
+            <input
+              type="date"
+              value={editDueDate || ''}
+              onChange={e => setEditDueDate(e.target.value)}
+              style={{width:'100%',marginBottom:8}}
+            />
+            <div style={{display:'flex',justifyContent:'flex-end',gap:8}}>
+              <button onClick={handleEditCancel} style={{background:'#eee',color:'#333'}}>Cancel</button>
+              <button onClick={handleEditSave}>Save</button>
+            </div>
+          </div>
+        </div>
+      )}
       <TaskForm onAddTask={addTask} />
       <TaskFilter currentFilter={currentFilter} counts={counts} onFilterChange={setCurrentFilter} />
       <input
@@ -81,7 +137,7 @@ const Dashboard = () => {
         tasks={filterTasks()}
         onToggleComplete={toggleComplete}
         onDelete={deleteTask}
-        onEdit={setEditTask}
+        onEdit={startEditTask}
       />
     </div>
   );
