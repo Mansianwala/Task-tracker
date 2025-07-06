@@ -11,7 +11,7 @@ function PrivateRoute({ children }) {
 
 function App() {
   return (
-    <Router>
+    <Router basename="/Task-tracker">
       <div className="App">
         <Routes>
           <Route path="/" element={<Login />} />
