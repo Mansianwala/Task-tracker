@@ -1,9 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const [username, setUsername] = useState('');
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (localStorage.getItem('username')) {
+      navigate('/dashboard');
+    }
+  }, [navigate]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
