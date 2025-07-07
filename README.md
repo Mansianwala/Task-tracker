@@ -38,11 +38,10 @@ A modern, multi-user personal task tracker web app built with React. Each user c
 - Modern CSS (flexbox, media queries)
 
 ## 🔗 Live Demo
-[Add your deployed app link here, e.g. https://yourusername.github.io/Task-tracker]
+[deployed app link here,. https://mansianwala.github.io/Task-tracker]
 
 ## 🖼 Screenshots
-![Login Screen](screenshots/login.png)
-![Dashboard](screenshots/dashboard.png)
+![Login Screen]![alt text](Login.png)
+![Dashboard](![alt text](Dashboard.png))
 
----
-Feel free to customize this README with your own screenshots and deployment link!
+
