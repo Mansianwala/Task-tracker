@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import TaskForm from './TaskForm';
 import TaskList from './TaskList';
 import TaskFilter from './TaskFilter';
-import { saveTasks, loadTasks } from '../utils/localStorage';
 
 const Dashboard = () => {
   const [tasks, setTasks] = useState([]);
@@ -15,14 +15,30 @@ const Dashboard = () => {
   const [darkMode, setDarkMode] = useState(() => {
     return localStorage.getItem('darkMode') === 'true';
   });
+  const [username, setUsername] = useState(() => localStorage.getItem('currentUser') || '');
+  const navigate = useNavigate();
 
+  // Redirect to login if not logged in
   useEffect(() => {
-    setTasks(loadTasks());
-  }, []);
+    if (!username) {
+      navigate('/');
+    }
+  }, [username, navigate]);
 
+  // Load tasks for this user
   useEffect(() => {
-    saveTasks(tasks);
-  }, [tasks]);
+    if (username) {
+      const data = localStorage.getItem(`tasks_${username}`);
+      setTasks(data ? JSON.parse(data) : []);
+    }
+  }, [username]);
+
+  // Save tasks for this user
+  useEffect(() => {
+    if (username) {
+      localStorage.setItem(`tasks_${username}`, JSON.stringify(tasks));
+    }
+  }, [tasks, username]);
 
   useEffect(() => {
     localStorage.setItem('darkMode', darkMode);
@@ -60,7 +76,6 @@ const Dashboard = () => {
     pending: tasks.filter(t => !t.completed).length,
   };
 
-  const username = localStorage.getItem('username');
   const startEditTask = (task) => {
     setEditTask(task);
     setEditTitle(task.title);
@@ -84,8 +99,20 @@ const Dashboard = () => {
     setEditTask(null);
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem('currentUser');
+    setUsername('');
+    navigate('/');
+  };
+
   return (
     <div>
+      <button
+        onClick={handleLogout}
+        style={{ float: 'left', marginBottom: 8, background: '#ff5252', color: '#fff' }}
+      >
+        Logout
+      </button>
       <button
         onClick={() => setDarkMode(dm => !dm)}
         style={{ float: 'right', marginBottom: 8 }}

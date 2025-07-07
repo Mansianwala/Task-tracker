@@ -6,7 +6,7 @@ const Login = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (localStorage.getItem('username')) {
+    if (localStorage.getItem('currentUser')) {
       navigate('/dashboard');
     }
   }, [navigate]);
@@ -14,7 +14,7 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (username.trim()) {
-      localStorage.setItem('username', username);
+      localStorage.setItem('currentUser', username);
       navigate('/dashboard');
     }
   };
