@@ -5,7 +5,7 @@ import Dashboard from './components/Dashboard';
 import './App.css';
 
 function PrivateRoute({ children }) {
-  const username = localStorage.getItem('username');
+  const username = localStorage.getItem('currentUser');
   return username ? children : <Navigate to="/" replace />;
 }
 
